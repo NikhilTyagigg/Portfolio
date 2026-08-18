@@ -48,10 +48,9 @@ This portfolio is designed to be deployed on:
 - Replace `<password>` with your database user password
 - Save this as `MONGODB_URI`
 
-Example format:
-```
-mongodb+srv://admin:your_password@cluster0.xxxxx.mongodb.net/portfolio?retryWrites=true&w=majority
-```
+**Format**: `mongodb+srv://[username]:[password]@[cluster].mongodb.net/portfolio?retryWrites=true&w=majority`
+
+Store this securely in Render's environment variables (never commit to Git).
 
 ---
 
@@ -81,16 +80,18 @@ git push origin main
 ### 2.3 Set Environment Variables
 In the Render dashboard, add these environment variables:
 
-```
-MONGODB_URI=mongodb+srv://admin:YOUR_PASSWORD@cluster0.xxxxx.mongodb.net/portfolio?retryWrites=true&w=majority
-JWT_SECRET=your_random_secret_key_here
-GITHUB_TOKEN=
-GITHUB_USERNAME=NikhilTyagigg
-ADMIN_EMAIL=admin@portfolio.local
-ADMIN_PASSWORD=your_secure_password
-CLIENT_URL=https://your-vercel-frontend-url.vercel.app
-PORT=5000
-```
+| Variable | Value |
+|----------|-------|
+| `MONGODB_URI` | Your MongoDB Atlas connection string (from step 1.5) |
+| `JWT_SECRET` | Generate a random string (e.g., using https://generate-random.org/) |
+| `GITHUB_TOKEN` | (Leave blank unless you need private repo access) |
+| `GITHUB_USERNAME` | `NikhilTyagigg` |
+| `ADMIN_EMAIL` | `admin@portfolio.local` |
+| `ADMIN_PASSWORD` | Create a strong password |
+| `CLIENT_URL` | Your Vercel frontend URL (from step 3) |
+| `PORT` | `5000` |
+
+⚠️ **Never commit secrets to Git** — use Render's dashboard to set environment variables.
 
 ### 2.4 Deploy
 - Click **Create Web Service**
@@ -134,26 +135,20 @@ VITE_API_URL=https://portfolio-server.onrender.com/api
 
 ## Step 4: Update Configuration
 
-After deployment, update these files locally and push:
+⚠️ **Important**: Never commit secrets to Git. Set all environment variables directly in the Render and Vercel dashboards.
 
-### Update `client/.env.production`
+### For Render Backend Environment Variables:
+Use Render's dashboard to set all sensitive values. Do not create `.env` files in Git.
+
+### For Vercel Frontend:
 ```env
-VITE_API_URL=https://portfolio-server.onrender.com/api
+VITE_API_URL=https://your-render-backend-url.onrender.com/api
 ```
 
-### Update `server/.env`
-```env
-MONGODB_URI=mongodb+srv://admin:YOUR_PASSWORD@cluster0.xxxxx.mongodb.net/portfolio?retryWrites=true&w=majority
-JWT_SECRET=your_random_secret_key_here
-ADMIN_EMAIL=admin@portfolio.local
-ADMIN_PASSWORD=your_secure_password
-CLIENT_URL=https://your-vercel-url.vercel.app
-```
-
-Then push:
+Then push your code:
 ```bash
 git add .
-git commit -m "Update production environment variables"
+git commit -m "Update production configuration"
 git push origin main
 ```
 
