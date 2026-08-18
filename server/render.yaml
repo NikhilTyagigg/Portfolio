@@ -1,0 +1,30 @@
+services:
+  - type: web
+    name: portfolio-server
+    runtime: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: MONGODB_URI
+        fromDatabase:
+          name: portfolio-db
+          property: connectionString
+      - key: JWT_SECRET
+        generateValue: true
+      - key: GITHUB_USERNAME
+        value: NikhilTyagigg
+      - key: ADMIN_EMAIL
+        value: admin@portfolio.local
+      - key: ADMIN_PASSWORD
+        generateValue: true
+
+databases:
+  - name: portfolio-db
+    engine: mongodb
+    plan: free
+    ipAllowList:
+      - key: anywhere
+        value: 0.0.0.0/0
