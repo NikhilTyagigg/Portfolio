@@ -2,6 +2,12 @@ import { useEffect, useState } from 'react'
 import axios from 'axios'
 
 const apiBase = import.meta.env.VITE_API_URL || 'http://localhost:5000/api'
+const serverBase = import.meta.env.VITE_SERVER_URL || apiBase.replace(/\/api\/?$/, '')
+const defaultResume = {
+  title: 'Nikhil Tyagi Resume',
+  fileName: 'Nikhil_Tyagi_Resume.pdf',
+  fileUrl: '/uploads/Nikhil_Tyagi_Resume.pdf'
+}
 
 function ResumePage() {
   const [resume, setResume] = useState(null)
@@ -11,10 +17,11 @@ function ResumePage() {
     const fetchResume = async () => {
       try {
         const response = await axios.get(`${apiBase}/resume`)
-        const latestResume = response.data[0] || null
+        const latestResume = response.data[0] || defaultResume
         setResume(latestResume)
       } catch (error) {
         console.error('Failed to fetch resume:', error)
+        setResume(defaultResume)
       } finally {
         setLoading(false)
       }
@@ -23,7 +30,7 @@ function ResumePage() {
     fetchResume()
   }, [])
 
-  const resumeUrl = resume ? `http://localhost:5000${resume.fileUrl}` : ''
+  const resumeUrl = resume ? `${serverBase}${resume.fileUrl}` : ''
 
   return (
     <div className="space-y-8 py-8">
