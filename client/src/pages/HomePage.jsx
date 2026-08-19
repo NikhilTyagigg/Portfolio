@@ -1,6 +1,7 @@
-import { motion } from 'framer-motion'
+import { motion, useMotionValue, useSpring, useTransform } from 'motion/react'
 import { FiArrowRight, FiDownload, FiGithub, FiLinkedin, FiMail } from 'react-icons/fi'
 import { Link } from 'react-router-dom'
+import { useState } from 'react'
 
 const stats = [
   { label: 'Projects Completed', value: '18+', suffix: '' },
@@ -12,6 +13,23 @@ const stats = [
 const roles = ['Backend Developer', 'Software Engineer', 'Java Developer', 'Cloud Engineer']
 
 function HomePage() {
+  const [activeLayer, setActiveLayer] = useState('orbit')
+  const pointerX = useMotionValue(0)
+  const pointerY = useMotionValue(0)
+  const rotateX = useSpring(useTransform(pointerY, [-0.5, 0.5], [8, -8]), { stiffness: 140, damping: 18 })
+  const rotateY = useSpring(useTransform(pointerX, [-0.5, 0.5], [-10, 10]), { stiffness: 140, damping: 18 })
+
+  const handleSceneMove = (event) => {
+    const bounds = event.currentTarget.getBoundingClientRect()
+    pointerX.set((event.clientX - bounds.left) / bounds.width - 0.5)
+    pointerY.set((event.clientY - bounds.top) / bounds.height - 0.5)
+  }
+
+  const resetScene = () => {
+    pointerX.set(0)
+    pointerY.set(0)
+  }
+
   return (
     <div className="space-y-20 pb-16">
       <section className="grid items-center gap-10 py-10 md:grid-cols-[1.2fr_0.8fr]">
@@ -54,38 +72,29 @@ function HomePage() {
         </motion.div>
 
         <motion.div initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.5 }} className="relative">
-          <div className="absolute inset-0 -z-10 rounded-[2rem] bg-gradient-to-br from-blue-600/25 to-violet-600/20 blur-2xl" />
-          <div className="overflow-hidden rounded-[2rem] border border-slate-800 bg-slate-900 p-4 shadow-2xl">
-            <div className="rounded-[1.5rem] bg-gradient-to-br from-slate-800 via-slate-900 to-slate-900 p-6">
-              <div className="mb-6 flex items-center gap-2">
-                <span className="h-3 w-3 rounded-full bg-red-400" />
-                <span className="h-3 w-3 rounded-full bg-yellow-400" />
-                <span className="h-3 w-3 rounded-full bg-emerald-400" />
-              </div>
-              <div className="flex items-center gap-4 rounded-2xl border border-slate-700 bg-slate-950/60 p-4">
-                <div className="flex h-20 w-20 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-500 to-violet-600 font-black text-2xl text-white">
-                  NT
-                </div>
-                <div>
-                  <div className="text-xl font-bold text-white">Nikhil Tyagi</div>
-                  <div className="text-sm text-slate-400">Senior Software Engineer</div>
-                  <div className="mt-2 flex flex-wrap gap-2 text-xs text-blue-300">
-                    <span>Java</span>
-                    <span>Spring</span>
-                    <span>React</span>
-                    <span>GKE</span>
-                  </div>
-                </div>
-              </div>
-
-              <div className="mt-6 grid grid-cols-2 gap-4">
-                {['Java', 'SQL', 'MongoDB', 'Terraform'].map((skill) => (
-                  <div key={skill} className="rounded-xl border border-slate-700 bg-slate-900 p-3 text-center text-sm font-medium text-slate-200">
-                    {skill}
-                  </div>
-                ))}
-              </div>
-            </div>
+          <div className="scene-aura" />
+          <div className="scene-stage" onMouseMove={handleSceneMove} onMouseLeave={resetScene}>
+            <motion.div className="scene-world" style={{ rotateX, rotateY }}>
+              <div className="scene-grid" />
+              <motion.div className="scene-orbit scene-orbit-one" animate={activeLayer === 'orbit' ? { rotateZ: 360 } : { rotateZ: 0 }} transition={{ duration: 18, repeat: Infinity, ease: 'linear' }} />
+              <motion.div className="scene-orbit scene-orbit-two" animate={{ rotateZ: -360 }} transition={{ duration: 24, repeat: Infinity, ease: 'linear' }} />
+              <motion.div className="scene-core" whileHover={{ scale: 1.08 }}>
+                <span>NT</span>
+                <small>BUILD / SHIP / SCALE</small>
+              </motion.div>
+              <div className="scene-node scene-node-java">JAVA</div>
+              <div className="scene-node scene-node-cloud">CLOUD</div>
+              <div className="scene-node scene-node-data">DATA</div>
+              <div className="scene-panel scene-panel-top">SYSTEMS <strong>01</strong></div>
+              <div className="scene-panel scene-panel-bottom">AVAILABLE <strong>NOW</strong></div>
+            </motion.div>
+            <div className="scene-label">INTERACTIVE / 3D PROFILE</div>
+          </div>
+          <div className="mt-4 flex items-center justify-between px-2 text-xs uppercase tracking-[0.18em] text-slate-500">
+            <span>Move to explore</span>
+            <button type="button" onClick={() => setActiveLayer(activeLayer === 'orbit' ? 'still' : 'orbit')} className="text-blue-300 transition hover:text-white">
+              {activeLayer === 'orbit' ? 'Pause orbit' : 'Resume orbit'}
+            </button>
           </div>
         </motion.div>
       </section>
