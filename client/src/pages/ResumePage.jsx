@@ -30,7 +30,11 @@ function ResumePage() {
     fetchResume()
   }, [])
 
-  const resumeUrl = resume ? `${serverBase}${resume.fileUrl}` : ''
+  const resumeUrl = resume
+    ? resume._id
+      ? `${apiBase}/resume/${resume._id}/file`
+      : `${serverBase}${resume.fileUrl}`
+    : ''
 
   return (
     <div className="space-y-8 py-8">
@@ -55,7 +59,7 @@ function ResumePage() {
             </div>
 
             <div className="h-[700px] overflow-hidden rounded-2xl border border-slate-800 bg-slate-950">
-              {resume.fileUrl?.toLowerCase().endsWith('.pdf') ? (
+              {resume.fileName?.toLowerCase().endsWith('.pdf') || resume.fileUrl?.toLowerCase().endsWith('.pdf') ? (
                 <iframe src={resumeUrl} title="Resume preview" className="h-full w-full" />
               ) : (
                 <div className="flex h-full items-center justify-center text-slate-400">

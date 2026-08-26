@@ -1,6 +1,8 @@
 const express = require('express');
 const path = require('path');
-const crypto = require('crypto');
+const nodeCrypto = require('node:crypto');
+global.crypto = nodeCrypto;
+const { randomBytes, pbkdf2Sync, timingSafeEqual } = nodeCrypto;
 const cors = require('cors');
 const dotenv = require('dotenv');
 const mongoose = require('mongoose');
@@ -10,8 +12,8 @@ const User = require('./src/models/User');
 dotenv.config();
 
 const hashPassword = (password) => {
-  const salt = crypto.randomBytes(16).toString('hex');
-  const hash = crypto.pbkdf2Sync(password, salt, 100000, 64, 'sha512').toString('hex');
+  const salt = randomBytes(16).toString('hex');
+  const hash = pbkdf2Sync(password, salt, 100000, 64, 'sha512').toString('hex');
   return `${salt}:${hash}`;
 };
 
@@ -25,9 +27,9 @@ const comparePassword = (password, storedHash) => {
     return false;
   }
 
-  const derivedHash = crypto.pbkdf2Sync(password, salt, 100000, 64, 'sha512').toString('hex');
+  const derivedHash = pbkdf2Sync(password, salt, 100000, 64, 'sha512').toString('hex');
   try {
-    return crypto.timingSafeEqual(Buffer.from(hash, 'hex'), Buffer.from(derivedHash, 'hex'));
+    return timingSafeEqual(Buffer.from(hash, 'hex'), Buffer.from(derivedHash, 'hex'));
   } catch (error) {
     return false;
   }
@@ -68,7 +70,7 @@ const seedAdminUser = async () => {
       console.log(`Seeded admin user: ${email}`);
     }
   } catch (error) {
-    console.error('Failed to seed admin user:', error.message);
+    console.error('Failed to seed admin user:', error.stack || error.message);
   }
 };
 

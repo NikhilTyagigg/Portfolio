@@ -4,8 +4,8 @@ import axios from 'axios'
 const apiBase = import.meta.env.VITE_API_URL || 'http://localhost:5000/api'
 
 function AdminPage() {
-  const [email, setEmail] = useState('admin@portfolio.local')
-  const [password, setPassword] = useState('admin123')
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
   const [token, setToken] = useState(localStorage.getItem('portfolio-admin-token') || '')
   const [status, setStatus] = useState('')
   const [selectedFile, setSelectedFile] = useState(null)
@@ -74,17 +74,24 @@ function AdminPage() {
             <h3 className="text-xl font-bold text-white">Admin Login</h3>
             <div className="mt-4 space-y-4">
               <input
+                name="email"
+                type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="w-full rounded-xl border border-slate-700 bg-slate-900 p-3 text-slate-100 outline-none focus:border-blue-500"
                 placeholder="Email"
+                autoComplete="username"
+                required
               />
               <input
+                name="password"
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 className="w-full rounded-xl border border-slate-700 bg-slate-900 p-3 text-slate-100 outline-none focus:border-blue-500"
                 placeholder="Password"
+                autoComplete="current-password"
+                required
               />
               <button className="rounded-full bg-blue-500 px-4 py-2 font-medium text-white">Login</button>
             </div>
