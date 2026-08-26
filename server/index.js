@@ -52,6 +52,12 @@ app.get('/api/health', (req, res) => {
 app.use('/api', apiRoutes);
 
 const PORT = process.env.PORT || 5000;
+const mongoUri = process.env.MONGODB_URI || (process.env.NODE_ENV === 'production' ? '' : 'mongodb://127.0.0.1:27017/portfolio');
+
+if (!mongoUri) {
+  console.error('MONGODB_URI is required in production. Set it to your MongoDB Atlas connection string.');
+  process.exit(1);
+}
 
 const seedAdminUser = async () => {
   const email = process.env.ADMIN_EMAIL || 'admin@portfolio.local';
@@ -75,7 +81,7 @@ const seedAdminUser = async () => {
 };
 
 mongoose
-  .connect(process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/portfolio')
+  .connect(mongoUri)
   .then(async () => {
     console.log('MongoDB connected');
     await seedAdminUser();

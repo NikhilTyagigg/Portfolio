@@ -9,22 +9,12 @@ services:
       - key: NODE_ENV
         value: production
       - key: MONGODB_URI
-        fromDatabase:
-          name: portfolio-db
-          property: connectionString
+        sync: false
       - key: JWT_SECRET
         generateValue: true
       - key: GITHUB_USERNAME
         value: NikhilTyagigg
       - key: ADMIN_EMAIL
-        value: admin@portfolio.local
+        sync: false
       - key: ADMIN_PASSWORD
-        generateValue: true
-
-databases:
-  - name: portfolio-db
-    engine: mongodb
-    plan: free
-    ipAllowList:
-      - key: anywhere
-        value: 0.0.0.0/0
+        sync: false
