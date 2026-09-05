@@ -6,6 +6,7 @@ const pieColors = ['#3B82F6', '#8B5CF6', '#22C55E', '#F59E0B', '#EF4444']
 
 function GithubDashboardPage() {
   const [data, setData] = useState(null)
+  const [errorMessage, setErrorMessage] = useState('')
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -13,9 +14,13 @@ function GithubDashboardPage() {
       try {
         const apiBase = import.meta.env.VITE_API_URL || 'http://localhost:5000/api'
         const response = await axios.get(`${apiBase}/github/overview`)
+        if (!response.data?.stats) {
+          throw new Error('GitHub API returned an unexpected response')
+        }
         setData(response.data)
       } catch (error) {
         console.error('Failed to fetch GitHub data', error)
+        setErrorMessage(error.response?.data?.message || 'GitHub data is temporarily unavailable.')
       } finally {
         setLoading(false)
       }
@@ -29,7 +34,7 @@ function GithubDashboardPage() {
   }
 
   if (!data) {
-    return <div className="rounded-3xl border border-slate-800 bg-slate-900/70 p-8 text-red-300">Unable to load GitHub data right now.</div>
+    return <div className="rounded-3xl border border-slate-800 bg-slate-900/70 p-8 text-red-300">{errorMessage || 'Unable to load GitHub data right now.'}</div>
   }
 
   const metricData = [
