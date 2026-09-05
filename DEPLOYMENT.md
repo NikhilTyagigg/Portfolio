@@ -84,7 +84,7 @@ In the Render dashboard, add these environment variables:
 |----------|-------|
 | `MONGODB_URI` | Your MongoDB Atlas connection string (from step 1.5) |
 | `JWT_SECRET` | Generate a random string (e.g., using https://generate-random.org/) |
-| `GITHUB_TOKEN` | (Leave blank unless you need private repo access) |
+| `GITHUB_TOKEN` | A GitHub fine-grained token with public repository read access |
 | `GITHUB_USERNAME` | `NikhilTyagigg` |
 | `ADMIN_EMAIL` | `admin@portfolio.local` |
 | `ADMIN_PASSWORD` | Create a strong password |

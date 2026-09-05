@@ -10,7 +10,7 @@ const getGitHubHeaders = () => {
   };
 
   if (process.env.GITHUB_TOKEN) {
-    headers.Authorization = `token ${process.env.GITHUB_TOKEN}`;
+    headers.Authorization = `Bearer ${process.env.GITHUB_TOKEN}`;
   }
 
   return headers;
@@ -139,7 +139,11 @@ router.get('/overview', async (req, res) => {
     res.json(responsePayload);
   } catch (error) {
     console.error('GitHub overview fetch error:', error.response?.data || error.message);
-    res.status(500).json({ message: 'Failed to fetch GitHub data', error: error.message });
+    const status = error.response?.status === 403 ? 503 : 500;
+    const message = status === 503
+      ? 'GitHub API rate limit reached. Configure a valid GITHUB_TOKEN on Render.'
+      : 'Failed to fetch GitHub data';
+    res.status(status).json({ message, error: error.message });
   }
 });
 

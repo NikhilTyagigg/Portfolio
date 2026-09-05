@@ -59,7 +59,7 @@ function Header() {
   return (
     <>
   <div
-  className="fixed right-3 top-9 z-[60] flex h-16 w-16 -translate-y-1/2 flex-col items-center justify-center rounded-full border border-teal-400/40 bg-slate-950/95 text-center text-teal-200 shadow-lg shadow-slate-950/50 backdrop-blur sm:right-5"
+  className="fixed right-3 top-24 z-[60] flex h-16 w-16 -translate-y-1/2 flex-col items-center justify-center rounded-full border border-teal-400/40 bg-slate-950/95 text-center text-teal-200 shadow-lg shadow-slate-950/50 backdrop-blur sm:right-5 sm:top-9"
   aria-label={
     visitorCount === null
       ? 'Visitor count loading'
